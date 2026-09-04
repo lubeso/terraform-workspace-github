@@ -29,7 +29,6 @@ data "github_branch" "main" {
 resource "github_repository_ruleset" "main" {
   depends_on = [
     github_repository_file.static,
-    github_repository_file.workflow,
     github_repository_file.readme,
     github_repository_file.claude,
     github_repository_file.starter,
@@ -66,4 +65,34 @@ resource "github_repository_ruleset" "main" {
       allowed_merge_methods           = ["rebase"]
     }
   }
+}
+
+resource "github_actions_variable" "gcp_project_id" {
+  repository    = github_repository.main.name
+  variable_name = "GCP_PROJECT_ID"
+  value         = var.gcp_project_id
+}
+
+resource "github_actions_variable" "gcp_region" {
+  repository    = github_repository.main.name
+  variable_name = "GCP_REGION"
+  value         = var.gcp_region
+}
+
+resource "github_actions_variable" "artifact_registry_repository_id" {
+  repository    = github_repository.main.name
+  variable_name = "ARTIFACT_REGISTRY_REPOSITORY_ID"
+  value         = var.artifact_registry_repository_id
+}
+
+resource "github_actions_variable" "workload_identity_provider" {
+  repository    = github_repository.main.name
+  variable_name = "WORKLOAD_IDENTITY_PROVIDER"
+  value         = var.workload_identity_provider
+}
+
+resource "github_actions_variable" "gcp_service_account_email" {
+  repository    = github_repository.main.name
+  variable_name = "GCP_SERVICE_ACCOUNT_EMAIL"
+  value         = var.github_actions_service_account_email
 }

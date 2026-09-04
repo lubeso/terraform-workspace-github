@@ -17,17 +17,6 @@ resource "github_repository_file" "static" {
 }
 
 locals {
-  artifact_registry_image = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_id}/${var.artifact_registry_repository_id}/${local.repo_name}"
-
-  workflow_content = templatefile("${path.module}/templates/workflows/deploy.yml.tpl", {
-    cloud_run_service_name     = local.repo_name
-    gcp_project_id             = var.gcp_project_id
-    gcp_region                 = var.gcp_region
-    artifact_registry_image    = local.artifact_registry_image
-    workload_identity_provider = var.workload_identity_provider
-    service_account_email      = var.github_actions_service_account_email
-  })
-
   readme_content = templatefile("${path.module}/templates/docs/README.md.tpl", {
     repo_name     = local.repo_name
     provider_name = var.provider_name
@@ -49,15 +38,6 @@ locals {
     "main.go" = templatefile("${path.module}/templates/starter/go/main.go.tpl", { provider_name = var.provider_name })
     "go.mod"  = templatefile("${path.module}/templates/starter/go/go.mod.tpl", { module_name = local.repo_name })
   }
-}
-
-resource "github_repository_file" "workflow" {
-  repository          = github_repository.main.name
-  branch              = data.github_branch.main.branch
-  file                = ".github/workflows/deploy.yml"
-  content             = local.workflow_content
-  commit_message      = "ci: add deploy workflow"
-  overwrite_on_create = true
 }
 
 resource "github_repository_file" "readme" {
