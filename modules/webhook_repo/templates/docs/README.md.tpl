@@ -13,21 +13,25 @@ itself is provisioned by
 
 ## Runtime
 
-Runtime: **`${runtime}`**. This must match the `runtime` label on the
-`${repo_name}` Cloud Run service in terraform-workspace-gcp — CI reads that label at
-deploy time and fails the deploy if it isn't a supported value.
+Runtime: **`${runtime}`**. This picked which starter scaffold this repo was seeded
+with (`go.mod` vs `package.json`) — Cloud Native Buildpacks auto-detects the runtime
+from that marker file at build time regardless, so there's no deploy-time check
+against the Cloud Run service's `runtime` label in terraform-workspace-gcp; keep them
+in sync by convention, not enforcement.
 
 ## Deployment
 
-Every push to `main` (and every tag push) triggers `.github/workflows/deploy.yml`,
+Every push to `main` (and every tag push) triggers `.github/workflows/cd.yaml`,
 which:
 1. Authenticates to Google Cloud via Workload Identity Federation (no stored keys).
-2. Confirms the target Cloud Run service's `runtime` label is a supported value.
-3. Builds and publishes a container image with Cloud Native Buildpacks
+2. Builds and publishes a container image with Cloud Native Buildpacks
    (`pack build --publish`, using Google's `gcr.io/buildpacks/builder:google-22`,
    which auto-detects both Go and Node.js).
-4. Deploys that image to the existing Cloud Run service `${repo_name}` with
-   `gcloud run deploy`.
+3. Deploys that image to the existing Cloud Run service `${repo_name}` via the
+   `google-github-actions/deploy-cloudrun` action.
+
+GCP project/region/Artifact Registry/WIF values the workflow needs are read from this
+repository's Actions variables (`vars.*`), not hardcoded in the workflow file.
 
 Direct pushes to `main` require repository admin (or an approved pull request with a
 signed commit) — see the branch ruleset on this repository.
