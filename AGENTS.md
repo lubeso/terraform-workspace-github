@@ -10,8 +10,13 @@ Root-module Terraform workspace that manages GitHub resources via the
 - `providers.tf` — Terraform block (`required_version`, `required_providers`) and an
   **empty** `provider "github" {}` block. There is no `cloud`/`backend` block (the
   HCP Terraform workspace's repo connection and backend are configured in HCP), so a
-  bare `terraform init` uses the local backend. No `variables.tf` — the provider takes
-  nothing from Terraform variables.
+  bare `terraform init` uses the local backend.
+- `variables.tf` — inputs for `static_sites`, `domain`, and GCP identity parameters
+  (`gcp_project_id`, `gcp_region`, `gcp_storage_bucket`,
+  `gcp_workload_identity_provider`, `gcp_service_account_email`). None have defaults;
+  all values are configured in HCP Terraform.
+- `modules/static_site_repo` — provisions static site repositories (such as `www` for
+  Astro), repository branch rulesets, actions variables, and starter scaffolding.
 
 ## Authentication
 
