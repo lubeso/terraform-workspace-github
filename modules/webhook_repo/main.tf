@@ -12,6 +12,7 @@ resource "github_repository" "main" {
 
   allow_merge_commit     = false
   allow_squash_merge     = true
+  allow_rebase_merge     = true
   allow_update_branch    = true
   auto_init              = true
   delete_branch_on_merge = true
@@ -62,7 +63,7 @@ resource "github_repository_ruleset" "main" {
       dismiss_stale_reviews_on_push   = true
       require_last_push_approval      = true
       required_approving_review_count = 1
-      allowed_merge_methods           = ["rebase"]
+      allowed_merge_methods           = ["squash", "rebase"]
     }
   }
 }
