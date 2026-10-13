@@ -29,10 +29,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Build site
         run: npm run build
@@ -41,5 +45,5 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: dist
-          destination: '$${{ vars.GCP_STORAGE_BUCKET }}$${{ vars.BUCKET_PATH != "" && format("/{0}", vars.BUCKET_PATH) || "" }}'
+          destination: $${{ vars.GCP_STORAGE_DESTINATION }}
           parent: false

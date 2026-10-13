@@ -26,4 +26,4 @@ npm run preview
 
 Deployments are fully automated via GitHub Actions:
 - **Continuous Integration (`.github/workflows/ci.yaml`)**: Runs on pushes and pull requests to `main` to build and validate the application.
-- **Continuous Deployment (`.github/workflows/cd.yaml`)**: Runs on **published releases**. Authenticates to Google Cloud via Workload Identity Federation (WIF) and uploads static assets to Cloud Storage (`$${vars.GCP_STORAGE_BUCKET}$${vars.BUCKET_PATH}`).
+- **Continuous Deployment (`.github/workflows/cd.yaml`)**: Runs on **published releases**. Authenticates to Google Cloud via Workload Identity Federation (WIF) and uploads static assets to Cloud Storage (`$${vars.GCP_STORAGE_DESTINATION}`).
