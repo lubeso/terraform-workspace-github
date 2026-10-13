@@ -30,7 +30,7 @@ resource "github_repository_ruleset" "main" {
   depends_on = [
     github_repository_file.static,
     github_repository_file.readme,
-    github_repository_file.claude,
+    github_repository_file.agents,
     github_repository_file.starter,
   ]
   name        = "main"

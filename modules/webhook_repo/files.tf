@@ -24,7 +24,7 @@ locals {
     runtime       = var.runtime
   })
 
-  claude_content = templatefile("${path.module}/templates/docs/CLAUDE.md.tpl", {
+  agents_content = templatefile("${path.module}/templates/docs/AGENTS.md.tpl", {
     repo_name     = local.repo_name
     provider_name = var.provider_name
     version_name  = var.version_name
@@ -49,12 +49,12 @@ resource "github_repository_file" "readme" {
   overwrite_on_create = true # overwrites the README auto_init already created
 }
 
-resource "github_repository_file" "claude" {
+resource "github_repository_file" "agents" {
   repository          = github_repository.main.name
   branch              = data.github_branch.main.branch
-  file                = "CLAUDE.md"
-  content             = local.claude_content
-  commit_message      = "docs: add CLAUDE.md"
+  file                = "AGENTS.md"
+  content             = local.agents_content
+  commit_message      = "docs: add AGENTS.md"
   overwrite_on_create = true
 }
 
