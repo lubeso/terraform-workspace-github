@@ -29,16 +29,13 @@ variable "webhooks" {
 }
 
 # --- Plain GCP identity inputs -------------------------------------------------
-# These duplicate values that live in terraform-workspace-gcp. project id/region are
-# that workspace's own stable inputs. workload_identity_provider and
-# github_actions_service_account_email are only knowable after that workspace's
-# module.oidc_github_actions is applied once, because terraform-module-gcp-oidc
-# v1.0.0 appends a random 2-byte suffix to both the WIF pool/provider ID and the
-# service account ID and exposes no module outputs. Fill these in by hand from
-# `gcloud iam workload-identity-pools providers describe` / `gcloud iam
-# service-accounts list` (or the HCP Terraform state UI) after that workspace's
-# first apply - the same manual-copy pattern terraform-workspace-gcp already uses
-# for github_owner_id/terraform_workspace_id.
+# These duplicate values that live in terraform-workspace-gcp. All 5 values are
+# directly exported by that workspace's outputs (see `output.gcp_project_id`,
+# `output.gcp_region`, `output.artifact_registry_repository_id`,
+# `output.github_actions_workload_identity_provider`, and
+# `output.github_actions_service_account_email` there) via terraform-module-gcp-oidc
+# v1.1.0+. Retrieve them via `terraform output` (or the HCP Terraform Outputs tab)
+# and supply them as workspace variables here.
 
 variable "gcp_project_id" {
   description = "GCP project ID terraform-workspace-gcp deploys the webhooks' Cloud Run services and Artifact Registry repository into."
@@ -59,18 +56,17 @@ variable "artifact_registry_repository_id" {
 variable "workload_identity_provider" {
   description = <<-EOF
     Full resource name of the WIF provider GitHub Actions authenticates through, e.g.
-    "projects/123456789/locations/global/workloadIdentityPools/github-actions-ab12/providers/github-actions-ab12".
-    Copy by hand from terraform-workspace-gcp's module.oidc_github_actions state/gcloud
-    output after that workspace's first apply.
+    "projects/123456789/locations/global/workloadIdentityPools/github-actions-ab12/providers/oidc".
+    Copy from terraform-workspace-gcp's output.github_actions_workload_identity_provider.
   EOF
   type        = string
 }
 
 variable "github_actions_service_account_email" {
   description = <<-EOF
-    Email of the service account terraform-workspace-gcp's module.oidc_github_actions
-    creates, e.g. "github-actions-ab12@<project>.iam.gserviceaccount.com". Copy by
-    hand after that workspace's first apply.
+    Email of the service account for GitHub Actions CI/CD, e.g.
+    "github-actions-ab12@<project>.iam.gserviceaccount.com".
+    Copy from terraform-workspace-gcp's output.github_actions_service_account_email.
   EOF
   type        = string
 }

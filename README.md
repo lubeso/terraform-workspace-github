@@ -50,11 +50,11 @@ Configure the workspace input variables defined in `variables.tf`:
 | Name | Description | Source |
 |------|-------------|--------|
 | `webhooks` | Map of provider => version => `{ runtime }` | Mirrored from `terraform-workspace-gcp` |
-| `gcp_project_id` | Target GCP project ID | From GCP workspace |
-| `gcp_region` | Target GCP region | From GCP workspace |
-| `artifact_registry_repository_id` | Artifact Registry repo ID for webhook images (default `webhooks`) | From GCP workspace |
-| `workload_identity_provider` | WIF provider resource name | Copied from GCP workspace after first apply |
-| `github_actions_service_account_email` | GitHub Actions service account email | Copied from GCP workspace after first apply |
+| `gcp_project_id` | Target GCP project ID | From `terraform-workspace-gcp` outputs |
+| `gcp_region` | Target GCP region | From `terraform-workspace-gcp` outputs |
+| `artifact_registry_repository_id` | Artifact Registry repo ID for webhook images (default `webhooks`) | From `terraform-workspace-gcp` outputs |
+| `workload_identity_provider` | WIF provider resource name | From `terraform-workspace-gcp` outputs |
+| `github_actions_service_account_email` | GitHub Actions service account email | From `terraform-workspace-gcp` outputs |
 
 ## Local use
 
