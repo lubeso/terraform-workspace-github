@@ -3,11 +3,11 @@ module "static_site_repos" {
   source   = "./modules/static_site_repo"
 
   repo_name   = each.key
-  description = coalesce(each.value.description, "Static website ${each.key}")
+  description = each.value.description != null ? each.value.description : "Static website ${each.key}"
   framework   = each.value.framework
-  visibility  = coalesce(each.value.visibility, "public")
-  base_path   = coalesce(each.value.base_path, "/")
-  bucket_path = coalesce(each.value.bucket_path, "")
+  visibility  = each.value.visibility != null ? each.value.visibility : "public"
+  base_path   = each.value.base_path != null ? each.value.base_path : "/"
+  bucket_path = each.value.bucket_path != null ? each.value.bucket_path : ""
   domain      = "www.${var.domain}"
 
   gcp_project_id                 = var.gcp_project_id
