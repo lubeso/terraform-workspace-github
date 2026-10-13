@@ -5,27 +5,13 @@ This file provides guidance to AI coding agents when working with code in this r
 ## Status
 
 Root-module Terraform workspace that manages GitHub resources via the
-`integrations/github` provider (`~> 6.13`) and `hashicorp/local` provider (`~> 2.7.0`)
-on Terraform `~> 1.16.0`.
-
-The workspace provisions and bootstraps webhook application repositories
-(`webhook-<provider>-<version>`) via `modules/webhook_repo`, driven by `var.webhooks`
-to mirror endpoints defined in `terraform-workspace-gcp`.
+`integrations/github` provider (`~> 6.13`) on Terraform `~> 1.16.0`.
 
 - `providers.tf` — Terraform block (`required_version`, `required_providers`) and an
   **empty** `provider "github" {}` block. There is no `cloud`/`backend` block (the
   HCP Terraform workspace's repo connection and backend are configured in HCP), so a
-  bare `terraform init` uses the local backend.
-- `main.tf` — Flattens `var.webhooks` into `"<provider>-<version>"` keys and calls
-  `module.webhook_repos` with `for_each`.
-- `variables.tf` — `var.webhooks` configuration map and GCP identity inputs
-  (`gcp_project_id`, `gcp_region`, `artifact_registry_repository_id`,
-  `workload_identity_provider`, `github_actions_service_account_email`).
-- `outputs.tf` — `webhook_repositories` output mapping each webhook key to its full
-  GitHub repository name.
-- `modules/webhook_repo` — Submodule creating a public GitHub repository, branch
-  ruleset (signatures, PR review, squash/rebase merges), Actions variables, starter
-  scaffold (Go or Node.js), and CD workflow.
+  bare `terraform init` uses the local backend. No `variables.tf` — the provider takes
+  nothing from Terraform variables.
 
 ## Authentication
 
@@ -39,17 +25,6 @@ HCP Terraform:
 Keeping these out of config keeps the secret out of state. Never wire the token
 into a variable or `.tfvars`. Scope it to only what this workspace manages, and
 rotate it.
-
-## Workspace Variables
-
-In addition to provider environment variables, HCP Terraform workspace variables must
-supply the Terraform input variables defined in `variables.tf`:
-
-- `webhooks` — nested map of `provider => version => { runtime }`, mirroring the
-  same variable in `terraform-workspace-gcp`.
-- GCP identity values — `gcp_project_id`, `gcp_region`,
-  `artifact_registry_repository_id`, `workload_identity_provider`, and
-  `github_actions_service_account_email` (copied from `terraform-workspace-gcp` post-apply).
 
 ## Commands
 
