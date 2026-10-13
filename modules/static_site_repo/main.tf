@@ -94,7 +94,10 @@ resource "github_actions_variable" "gcp_service_account_email" {
   value         = var.gcp_service_account_email
 }
 
+# GitHub Actions variables reject empty string values (HTTP 422). Only create BUCKET_PATH
+# if a subpath is explicitly specified; root sites omit it.
 resource "github_actions_variable" "bucket_path" {
+  count         = var.bucket_path != "" ? 1 : 0
   repository    = github_repository.main.name
   variable_name = "BUCKET_PATH"
   value         = var.bucket_path
